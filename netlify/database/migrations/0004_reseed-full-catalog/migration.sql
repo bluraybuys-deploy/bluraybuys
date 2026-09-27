@@ -1,0 +1,11 @@
+-- Re-seed the catalog after restoring the full ~1000-title product list.
+--
+-- The deals function only seeds when the table is empty (seedIfEmpty), so the
+-- previously seeded rows would otherwise stick around and the restored catalog
+-- in netlify/lib/catalog.mjs would never load. Clearing the table lets the
+-- function repopulate from the new list (verified products + ~1000 real movie
+-- editions) on the next request.
+--
+-- Safe and idempotent: deleting from an empty table is a no-op, and seeding
+-- runs again automatically. Earlier applied migrations are left untouched.
+DELETE FROM deals;

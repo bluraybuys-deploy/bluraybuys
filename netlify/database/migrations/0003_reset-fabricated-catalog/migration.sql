@@ -1,0 +1,12 @@
+-- Reset the seeded catalog so the deals API re-seeds from the real product list.
+--
+-- The catalog was previously seeded with procedurally generated rows that
+-- carried placeholder ASINs (no real Amazon product page) and fabricated
+-- prices. Those rows are why titles such as "John Wick: Chapter 4" showed an
+-- invented price and linked to a search page instead of the product page.
+--
+-- Clearing the table lets the deals function re-seed from the curated list of
+-- real products (real ASINs + real prices) in netlify/lib/catalog.mjs on the
+-- next request. Safe and idempotent: deleting from an empty or already-correct
+-- table is a no-op, and seeding runs again automatically.
+DELETE FROM deals;

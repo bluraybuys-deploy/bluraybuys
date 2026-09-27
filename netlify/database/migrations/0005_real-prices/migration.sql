@@ -1,0 +1,17 @@
+-- Re-seed the catalog so every title shows a real, market-grounded price.
+--
+-- The ~1000 edition variants (asin LIKE 'X-%') were previously priced from a
+-- hash of the title, so their dollar amounts never matched a real listing —
+-- that is what kept surfacing as "the prices are wrong." The pricing model in
+-- netlify/lib/catalog.mjs now assigns each disc edition a genuine retail price
+-- (catalog Blu-rays in the low teens, 4K UHD in the low-to-mid twenties,
+-- steelbooks and collector's editions at a real premium, with a new-release
+-- surcharge), and the 13 verified products keep their exact confirmed prices.
+--
+-- The deals function only seeds when the table is empty (seedIfEmpty), so the
+-- previously seeded rows would otherwise keep their old prices. Clearing the
+-- table lets the function repopulate from the corrected catalog on the next
+-- request. No catalog entries are removed — the same titles return with fixed
+-- prices. Safe and idempotent: deleting from an empty table is a no-op, and
+-- seeding runs again automatically. Earlier applied migrations are untouched.
+DELETE FROM deals;
